@@ -1,4 +1,5 @@
-import  { Controller, Get, Post, Put, Delete } from "@nestjs/common";
+import  { Controller, Get, Post, Put, Delete, Req } from "@nestjs/common";
+import { Request } from "express";
 import { AuthService } from "./auth.service";
 // import 
 
@@ -9,10 +10,11 @@ export class AuthController {
     }
 
     //endpoints for service methods
-
     // /auth/signup
     @Post('signup')
-    signUp(){
+    //creating the user
+    signUp(@Req() req: Request) {
+        console.log(req);
         return this.authService.signUp();
     }
     
