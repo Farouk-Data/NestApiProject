@@ -3,4 +3,7 @@
 ## 1_building the auth module/controller/provider
 ## 2_setting up a database
     => docker compose up dev-db -d (set up postgres)
-    => use prisma
+    => use prisma (result in a db module that you can use in typescript)
+    => prisma migration
+    => creating typescript types for the schema
+    
