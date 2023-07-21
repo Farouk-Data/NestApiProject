@@ -3,6 +3,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class AuthService {
+    //dependency injection
     constructor(private prisma: PrismaService) {
         
     }
