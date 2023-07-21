@@ -22,5 +22,7 @@
     => prisma relations
     => Async functions
     => try catch Prisma/NestJs errors
+## 6_SignIn/SignUp Logic
+    => hashing of the password, working with dtos
 
     

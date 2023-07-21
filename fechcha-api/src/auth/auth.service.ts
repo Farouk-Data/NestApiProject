@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AuthDto } from "./dto";
 import * as argon from 'argon2';
@@ -14,7 +14,7 @@ export class AuthService {
     async signUp(dto: AuthDto) {
         //generate password hash
         const hash = await argon.hash(dto.passwordHash);
-        
+
         //handle errors related to use of unique credentials (prisma/nest error handling)
         try {
             //save the user in the db
@@ -44,11 +44,29 @@ export class AuthService {
                 }
             }
             throw (error);
-        }
-        
+        }        
     }
 
-    signIn(){
-        return ('SignIn Controller Method');
+    async signIn(dto: AuthDto){
+
+        //find the user by email
+        const user = await this.prisma.user.findUnique({ where: { email : dto.email  }})
+
+        //if user does not exist throw exception
+        if (!user) {
+            throw new NotFoundException(`No User Found For Email: ${dto.email}`);
+        }
+
+        //compare passwords
+        const isPasswordValid = await argon.verify(user.passwordHash, dto.passwordHash);
+
+        //if passwords incorrect throw exception
+        if (!isPasswordValid) {
+            throw new UnauthorizedException('Invalid Password');
+        }
+
+        //if all is well send back the user
+        delete user.passwordHash;
+        return (user);
     }
 }
