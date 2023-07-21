@@ -15,5 +15,8 @@
     => use classes for DTOs:
         - Classes are part of JS (preserved as real entities in the compiled JavaScript)
         - interfaces are removed during the transpilation, Nest can't refer to them at runtime. This is important because features such as Pipes enable additional possibilities when they have access to the metatype of the variable at runtime
+## 5_Using Class Validators
+    => Pipes
+    => install class validators
 
     

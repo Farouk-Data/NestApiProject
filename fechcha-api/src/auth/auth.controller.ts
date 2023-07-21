@@ -21,7 +21,7 @@ export class AuthController {
     //this will get the right body whether using express or fastify
     signUp(@Body() dto: AuthDto ) {
         console.log(dto);
-        return this.authService.signUp();
+        return this.authService.signUp(dto);
     }
     // signUp(@Req() req: Request) {
     //     console.log(req.headers);
