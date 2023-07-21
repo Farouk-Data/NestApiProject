@@ -18,5 +18,9 @@
 ## 5_Using Class Validators
     => Pipes
     => install class validators
+    => in Auth: generate a hash based on the password (using argon2)
+    => prisma relations
+    => Async functions
+    => try catch Prisma/NestJs errors
 
     
