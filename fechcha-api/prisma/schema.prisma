@@ -10,26 +10,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//relations: many bookmarks can belong to the same users (users can have many bookmarks)
+//relations: any bookmark at a scpecific time can only belong to one user
+// User ====> Bookmarks (One to Many)
+
 model User {
-  id        Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email         String
-  passwordHash  String
+  email        String @unique
+  passwordHash String
 
   firstName String?
   lastName  String?
+  
+  bookmarks  Bookmark[]
 
+  @@map("users")
 }
 
 model Bookmark {
-  id        Int @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
 
   title       String
   description String?
   link        String
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("bookmarks")
 }
