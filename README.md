@@ -24,5 +24,8 @@
     => try catch Prisma/NestJs errors
 ## 6_SignIn/SignUp Logic
     => hashing of the password, working with dtos
+## 7_Automating NPM Scripts:
+    => Applying changes to package.json Script field
+    => Rebuilding container and applying migration to the db
 
     
