@@ -23,13 +23,7 @@ export class AuthController {
         console.log(dto);
         return this.authService.signUp(dto);
     }
-    
-    // signUp(@Req() req: Request) {
-    //     console.log(req.headers);
-    //     console.log(req.body);
-    //     return this.authService.signUp();
-    // }
-    
+     
     // /auth/signin
     @Post('signin')
     signIn(@Body() dto: AuthDto){

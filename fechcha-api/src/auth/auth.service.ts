@@ -65,8 +65,9 @@ export class AuthService {
             throw new UnauthorizedException('Invalid Password');
         }
 
-        //if all is well send back the user
+        //if all is well send back the user without the password field
         delete user.passwordHash;
+        
         return (user);
     }
 }
