@@ -22,7 +22,7 @@
     => prisma relations
     => Async functions
     => try catch Prisma/NestJs errors
-## 6_SignIn/SignUp Logic
+## 6_SignIn/SignUp Logic (Basic Authentication)
     => hashing of the password, working with dtos
 ## 7_Automating NPM Scripts
     => Applying changes to package.json Script field
@@ -30,5 +30,6 @@
 ## 8_keeping track of the user (Sessions/JWT)
     => Authentication and Authorization
     => nestjs modules (config module)
+    => auth folder
 
     
