@@ -1,6 +1,6 @@
 # REST API WITH NESTJS (CRUD API + BOOKMARKS API)
 
-=> npm install to install node modules
+=> npm install to install -*node modules
 
 ## 1_building the auth module/controller/provider
 ## 2_setting up a database
