@@ -1,4 +1,5 @@
-# REST API WITH NESTJS (CRUD API + BOOKMARKS API)
+# ELO Ranking System API 
+## REST API WITH NESTJS (CRUD API)
 
 => npm install to install -*node modules
 => npx prisma studio
