@@ -2,7 +2,12 @@
 ## REST API WITH NESTJS (CRUD API)
 
 => npm install to install -*node modules
+
 => npx prisma studio
+=> npx prisma generate 
+=> npx prisma migrate dev
+=> npx prisma migrate deploy
+
 ## 1_building the auth module/controller/provider
 ## 2_setting up a database  
     => docker compose up dev-db -d (set up postgres)

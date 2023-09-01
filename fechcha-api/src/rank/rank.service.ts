@@ -10,7 +10,7 @@ export class RankService {
     private prisma: PrismaService) {
   }
   async getRank(){
-    return this.prisma.user.findMany();
+    return this.prisma.player.findMany();
   }
 
   create(createRankDto: CreateRankDto) {

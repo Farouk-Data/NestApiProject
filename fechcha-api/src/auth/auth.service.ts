@@ -21,9 +21,9 @@ export class AuthService {
         //handle errors related to use of unique credentials (prisma/nest error handling)
         try {
             //save the user in the db
-            const user = await this.prisma.user.create({
+            const user = await this.prisma.player.create({
                 data: {
-                    score: 1500,
+                    eloRating: 1500,
                     numOfGames: 0,
                     state: 0,
                     rank: -1,
@@ -33,7 +33,7 @@ export class AuthService {
                 //only return these
                 select: {
                     id: true,
-                    score: true,
+                    eloRating: true,
                     numOfGames: true,
                     state: true,
                     rank: true,
@@ -61,7 +61,7 @@ export class AuthService {
     async signIn(dto: AuthDto){
 
         //find the user by email
-        const user = await this.prisma.user.findUnique({ where: { email : dto.email  }})
+        const user = await this.prisma.player.findUnique({ where: { email : dto.email  }})
 
         //if user does not exist throw exception
         if (!user) {
