@@ -23,12 +23,20 @@ export class AuthService {
             //save the user in the db
             const user = await this.prisma.user.create({
                 data: {
+                    score: 1500,
+                    numOfGames: 0,
+                    state: 0,
+                    rank: -1,
                     email: dto.email,
                     passwordHash: hash,
                 },
                 //only return these
                 select: {
                     id: true,
+                    score: true,
+                    numOfGames: true,
+                    state: true,
+                    rank: true,
                     email: true,
                     createdAt: true
                 }
