@@ -11,7 +11,9 @@ export class RankController {
 
   @Get()
   async getRanking(){
+    this.rankService.updateRank();
     const users = await this.rankService.getRank();
     return users;
   }
+  
 }

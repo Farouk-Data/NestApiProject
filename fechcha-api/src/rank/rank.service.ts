@@ -10,7 +10,30 @@ export class RankService {
     private prisma: PrismaService) {
   }
   async getRank(){
-    return this.prisma.player.findMany();
+    return this.prisma.player.findMany({
+      orderBy: {
+        rank: 'asc',
+      }
+    });
+  }
+
+  async updateRank(): Promise<void> {
+    const players = await this.prisma.player.findMany({
+      orderBy: {
+        eloRating: 'desc',
+
+      }
+    });
+
+    let newRank = 1;
+
+    for (const player of players){
+      await this.prisma.player.update({
+        where: { id: player.id},
+        data: {rank: newRank },
+      })
+      newRank++;
+    }
   }
 
   create(createRankDto: CreateRankDto) {
