@@ -11,5 +11,8 @@ import { MatchModule } from './match/match.module';
   imports: [ConfigModule.forRoot({
     isGlobal: true,
   }), HomeModule, AuthModule, PrismaModule, RankModule, MatchModule],
+  controllers: [],
+  providers: [],
+  exports: []
 })
 export class AppModule {}
