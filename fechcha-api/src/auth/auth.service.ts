@@ -26,7 +26,7 @@ export class AuthService {
                     eloRating: 1500,
                     numOfGames: 0,
                     state: 0,
-                    rank: -1,
+                    rank: 1,
                     email: dto.email,
                     passwordHash: hash,
                 },
@@ -38,7 +38,9 @@ export class AuthService {
                     state: true,
                     rank: true,
                     email: true,
-                    createdAt: true
+                    createdAt: true, 
+                    division: true,
+                    rankBoard: true,
                 }
             });
             //or
