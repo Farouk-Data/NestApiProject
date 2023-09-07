@@ -15,8 +15,9 @@ model Player {
   eloRating  Int
   numOfGames Int
   state      Int
-  rank       Int  
+  rank       Int
   division   String @default("nooby")
+  rankBoard  String @default("Prov")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
