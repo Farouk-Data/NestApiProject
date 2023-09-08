@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Player {
-  playerId         Int       @id @default(autoincrement())
+  playerId   Int       @id @default(autoincrement())
   eloRating  Int
   numOfGames Int
   rank       Int
@@ -28,19 +28,21 @@ model Player {
   lastName  String?
 
   // Define a one-to-many relationship between player and matches
-  matches   Match[]
-
+  matches1 Match[] @relation("home")
+  matches2 Match[] @relation("adver")
 
   @@map("players")
 }
 
 model Match {
-  matchId        Int     @id @default(autoincrement())
-  state     Int
+  matchId Int @id @default(autoincrement())
+  state   Int
 
-  adversary   Player  @relation(fields: [adversaryId], references: [playerId])
-  adversaryId Int
-  
+  home   Player @relation("home", fields: [homeId], references: [playerId])
+  homeId Int
+
+  adversary      Player  @relation("adver", fields: [adversaryId], references: [playerId])
+  adversaryId    Int
 
   @@map("matches")
 }

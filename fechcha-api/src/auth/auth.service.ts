@@ -25,17 +25,15 @@ export class AuthService {
                 data: {
                     eloRating: 1500,
                     numOfGames: 0,
-                    state: 0,
                     rank: 1,
                     email: dto.email,
                     passwordHash: hash,
                 },
                 //only return these
                 select: {
-                    id: true,
+                    playerId: true,
                     eloRating: true,
                     numOfGames: true,
-                    state: true,
                     rank: true,
                     email: true,
                     createdAt: true, 

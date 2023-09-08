@@ -6,6 +6,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 @Injectable()
 export class RankService {
 
+  //dependcy injection
   constructor(
     private prisma: PrismaService) {
   }
@@ -29,7 +30,7 @@ export class RankService {
 
     for (const player of players){
       await this.prisma.player.update({
-        where: { id: player.id},
+        where: { playerId : player.playerId},
         data: {rank: newRank },
       })
       newRank++;

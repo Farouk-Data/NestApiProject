@@ -23,31 +23,51 @@ async function play() {
 @Injectable()
 export class MatchService {
   constructor(
-    private prisma: PrismaService) {
-  }
+    private readonly matchService: MatchService,
+    private readonly prisma: PrismaService,
+  ) {}
 
-  create(createMatchDto: CreateMatchDto) {
-    return 'This action adds a new match';
-  }
-
-  async update
-
-  async playMatch(id: number){
-    play();
-    const currentPlayer = await this.prisma.player.findUnique({
-      where: { id },
-      select: { numOfGames: true },
-    });
-
-    if (!currentPlayer) {
-      throw new Error(`Player with ID ${id} not found`);
+  getRandomDistinctIndices(max: number): number[] {
+    const indices = [];
+    while (indices.length < 2) {
+      const index = Math.floor(Math.random() * max);
+      if (!indices.includes(index)) {
+        indices.push(index);
+      }
     }
-    let newNum = currentPlayer.numOfGames + 1;
-    const updatedPlayer = await this.prisma.player.update({
-      where: { id },
-      data: { numOfGames: newNum },
-    });
+    return indices;
+  }
 
+  // async update
+
+  async playMatch() {
+    const players = await this.prisma.player.findMany();
+    if (players.length < 2) {
+      return 'Not enough players to play a match';
+    }
+    
+    // Randomly select two distinct player indices
+    const [player1Index, player2Index] = this.getRandomDistinctIndices(players.length);
+    
+    // Get the selected players' IDs
+    const player1Id = players[player1Index].playerId;
+    const player2Id = players[player2Index].playerId;
+    
+    // Create a match in the database
+    await this.prisma.match.create({
+      data: {
+        home: {
+          connect: {playerId: player1Id},
+        },
+        adversary: {
+          connect: {playerId: player2Id},
+        },
+        state: 0, // Set the initial state of the match as needed
+      },
+    });
+    play();
+    
+    return 'Match created between players ' + player1Id + ' and ' + player2Id;
   }
 
   updateEloRating(){

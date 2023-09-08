@@ -10,16 +10,12 @@ export class MatchController {
   constructor(private readonly matchService: MatchService,
     private prisma: PrismaService) {}
 
-  @Post()
-  create(@Body() createMatchDto: CreateMatchDto) {
-    return this.matchService.create(createMatchDto);
-  }
-
   @Get('play')
-  async playMatch(@Param('id') id: number){
-    this.matchService.playMatch(id);
+  async playMatch(){
+    this.matchService.playMatch();
 
   }
+
   @Get()
   findAll() {
     return this.matchService.findAll();
