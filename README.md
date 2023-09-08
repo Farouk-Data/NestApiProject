@@ -3,6 +3,7 @@
 
 => npm install to install -*node modules
 
+=> npx prisma init (init prisma directory)
 => npx prisma studio
 => npx prisma generate 
 => npx prisma migrate dev
