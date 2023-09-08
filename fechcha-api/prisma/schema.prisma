@@ -11,13 +11,12 @@ datasource db {
 }
 
 model Player {
-  id         Int    @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   eloRating  Int
   numOfGames Int
-  state      Int
   rank       Int
-  division   String @default("nooby")
-  rankBoard  String @default("Prov")
+  division   Division  @default(Nooby)
+  rankBoard  RankBoard @default(Provisional)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -28,9 +27,35 @@ model Player {
   firstName String?
   lastName  String?
 
+  // one-to-many relationship between player and matches
+  matches1 Match[] @relation("player1Match")
+  matches2 Match[] @relation("player2Match")
+
   @@map("players")
 }
 
 model Match {
-  id Int @id @default(autoincrement())
+  id    Int @id @default(autoincrement())
+  state Int
+
+  //reference to the player model to establish the relationship 
+  player1   Player @relation("player1Match", fields: [playerId1], references: [id])
+  playerId1 Int
+
+  player2   Player @relation("player2Match", fields: [playerId2], references: [id])
+  playerId2 Int
+
+  @@map("matches")
+}
+
+enum Division {
+  Nooby
+  Bronze
+  Gold
+  Legend
+}
+
+enum RankBoard {
+  Provisional
+  Established
 }
