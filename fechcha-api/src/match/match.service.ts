@@ -23,8 +23,7 @@ async function play() {
 @Injectable()
 export class MatchService {
   constructor(
-    private readonly matchService: MatchService,
-    private readonly prisma: PrismaService,
+    private prisma: PrismaService,
   ) {}
 
   getRandomDistinctIndices(max: number): number[] {
