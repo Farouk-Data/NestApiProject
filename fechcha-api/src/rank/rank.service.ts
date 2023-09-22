@@ -10,6 +10,26 @@ export class RankService {
   constructor(
     private prisma: PrismaService
   ) {}
+  async updateRankBoard(): Promise<void> {
+    const players = await this.prisma.player.findMany({
+      where: {
+        rankBoard: 'Provisional',
+        numOfGames:{
+          gt: 20,
+        }
+      },
+    });
+
+    for (const player of players){
+      await this.prisma.player.update({
+        where: { playerId : player.playerId},
+        data:{
+          rankBoard: 'Established'
+        },
+      })
+    }
+  }
+
   async getProvRank(){
     return this.prisma.player.findMany({
       where: {
