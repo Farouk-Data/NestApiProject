@@ -8,10 +8,23 @@ export class RankService {
 
   //dependcy injection
   constructor(
-    private prisma: PrismaService) {
-  }
-  async getRank(){
+    private prisma: PrismaService
+  ) {}
+  async getProvRank(){
     return this.prisma.player.findMany({
+      where: {
+        rankBoard: 'Provisional',
+      },
+      orderBy: {
+        rank: 'asc',
+      }
+    });
+  }
+  async getEstaRank(){
+    return this.prisma.player.findMany({
+      where: {
+        rankBoard: 'Established',
+      },
       orderBy: {
         rank: 'asc',
       }
