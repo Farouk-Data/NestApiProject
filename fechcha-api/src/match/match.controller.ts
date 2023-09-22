@@ -7,13 +7,11 @@ import { UpdateMatchDto } from './dto/update-match.dto';
 
 @Controller('match')
 export class MatchController {
-  constructor(private readonly matchService: MatchService,
-    private prisma: PrismaService) {}
+  constructor(private matchService: MatchService) {}
 
   @Get('play')
   async playMatch(){
     this.matchService.playMatch();
-
   }
 
   @Get()
