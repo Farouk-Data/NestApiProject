@@ -9,6 +9,13 @@ import { UpdateRankDto } from './dto/update-rank.dto';
 export class RankController {
   constructor(private rankService: RankService) {}
 
+
+  @Get()
+  async getAllRank(){
+    this.rankService.updateRank();
+    const users = await this.rankService.getAllRank();
+    return users;
+  }
   @Get('prov')
   async getProvRanking(){
     this.rankService.updateRank();

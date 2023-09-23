@@ -40,6 +40,9 @@ export class RankService {
       }
     });
   }
+  async getAllRank(){
+    return this.prisma.player.findMany();
+  }
   async getEstaRank(){
     return this.prisma.player.findMany({
       where: {
