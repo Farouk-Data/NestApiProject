@@ -2,7 +2,7 @@ import  { Controller, Get, Post, Put, Delete, Req, Body } from "@nestjs/common";
 import { Request } from "express";
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
-// import 
+import { RankService } from "src/rank/rank.service";
 
 // /auth
 @Controller('auth')
