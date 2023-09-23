@@ -9,6 +9,10 @@ import { UpdateRankDto } from './dto/update-rank.dto';
 export class RankController {
   constructor(private rankService: RankService) {}
 
+  @Get(':id')
+  async findOneRank(@Param('id') id: string){
+    return this.rankService.getOneRank(+id);
+  }
 
   @Get()
   async getAllRank(){

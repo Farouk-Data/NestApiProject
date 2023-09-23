@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateRankDto } from './dto/create-rank.dto';
 import { UpdateRankDto } from './dto/update-rank.dto';
 import { PrismaService } from "src/prisma/prisma.service";
+import { Player } from '@prisma/client'
 
 @Injectable()
 export class RankService {
@@ -29,7 +30,14 @@ export class RankService {
       })
     }
   }
-
+  async getOneRank(id: number): Promise<Player | null>{
+    const user = await this.prisma.player.findUnique({
+      where: {
+        playerId: id
+      }
+    });
+    return (user);
+  }
   async getProvRank(){
     return this.prisma.player.findMany({
       where: {
@@ -73,23 +81,23 @@ export class RankService {
     }
   }
 
-  create(createRankDto: CreateRankDto) {
-    return 'This action adds a new rank';
-  }
+  // create(createRankDto: CreateRankDto) {
+  //   return 'This action adds a new rank';
+  // }
 
-  findAll() {
-    return `This action returns all rank`;
-  }
+  // findAll() {
+  //   return `This action returns all rank`;
+  // }
 
-  findOne(id: number) {
-    return `This action returns a #${id} rank`;
-  }
+  // findOne(id: number) {
+  //   return `This action returns a #${id} rank`;
+  // }
 
-  update(id: number, updateRankDto: UpdateRankDto) {
-    return `This action updates a #${id} rank`;
-  }
+  // update(id: number, updateRankDto: UpdateRankDto) {
+  //   return `This action updates a #${id} rank`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} rank`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} rank`;
+  // }
 }
