@@ -51,9 +51,12 @@ export class MatchService {
     // Get the selected players' IDs
     const player1Id = players[player1Index].playerId;
     const player2Id = players[player2Index].playerId;
+
+    const player1 = players[player1Index];
+    const player2 = players[player2Index];
     
     // Create a match in the database
-    await this.prisma.match.create({
+    const match = await this.prisma.match.create({
       data: {
         home: {
           connect: {playerId: player1Id},
@@ -65,27 +68,40 @@ export class MatchService {
       },
     });
     play();
-    
+    let s = 0;
+    //check which player won
+    if (player1.rankBoard == "Provisional" && player2.rankBoard == "Provisional"){
+      if (player1Id > player2Id)
+        s = 1;
+      else 
+        s = -1;
+      let newR = ((player1.eloRating*player1.numOfGames + (player1.eloRating + player2.eloRating)/2) + 100*s) / (player1.numOfGames + 1)
+    }
+
+    if (player1.rankBoard == "Provisional" && player2.rankBoard == "Established"){
+      if (player1Id > player2Id)
+        s = 1;
+      else 
+        s = -1;
+      let newR = (player1.eloRating*player1.numOfGames + player2.eloRating + 200*s) / (player1.numOfGames + 1)
+    }
+
+    if (player1.rankBoard == "Established" && player2.rankBoard == "Provisional"){
+      if (player1Id > player2Id)
+        s = 1;
+      else 
+        s = 0;
+      let newR = player1.eloRating + (32*(player2.numOfGames/20))*(s - 1/(1 + Math.pow(10, ((player2.eloRating - player1.eloRating)/400))))
+    }
+
+    if (player1.rankBoard == "Established" && player2.rankBoard == "Established"){
+      if (player1Id > player2Id)
+        s = 1;
+      else 
+        s = 0;
+      let newR = player1.eloRating + 32*(s - 1/(1 + Math.pow(10, ((player2.eloRating - player1.eloRating)/400))))
+    }
+
     return 'Match created between players ' + player1Id + ' and ' + player2Id;
-  }
-
-  updateEloRating(){
-
-  }
-
-  findAll() {
-    return `This action returns all match`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} match`;
-  }
-
-  update(id: number, updateMatchDto: UpdateMatchDto) {
-    return `This action updates a #${id} match`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} match`;
   }
 }

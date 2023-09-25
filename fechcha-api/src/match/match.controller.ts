@@ -13,24 +13,4 @@ export class MatchController {
   async playMatch(){
     this.matchService.playMatch();
   }
-
-  @Get()
-  findAll() {
-    return this.matchService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.matchService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMatchDto: UpdateMatchDto) {
-    return this.matchService.update(+id, updateMatchDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.matchService.remove(+id);
-  }
 }
