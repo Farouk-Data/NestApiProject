@@ -62,6 +62,38 @@ export class RankService {
     });
   }
 
+  async updateDivision(): Promise<void> {
+    const players = await this.prisma.player.findMany();
+    for (const player of players){
+      if (player.rankBoard == "Established"){
+        if (player.eloRating < 800 && player.division != "Nooby"){
+            await this.prisma.player.update({
+              where: {playerId : player.playerId},
+              data: {division: "Nooby"},
+            })
+        }
+        if ((player.eloRating >= 800 && player.eloRating < 1250) && player.division != "Bronze"){
+          await this.prisma.player.update({
+            where: {playerId : player.playerId},
+            data: {division: "Bronze"},
+          })
+        }
+        if ((player.eloRating >= 1250 && player.eloRating < 1800) && player.division != "Gold"){
+          await this.prisma.player.update({
+            where: {playerId : player.playerId},
+            data: {division: "Gold"},
+          })
+        }
+        if ((player.eloRating >= 1800) && player.division != "Legend"){
+          await this.prisma.player.update({
+            where: {playerId : player.playerId},
+            data: {division: "Legend"},
+          })
+        }
+      }
+    }
+  }
+
   async updateRank(): Promise<void> {
     const players = await this.prisma.player.findMany({
       orderBy: {
@@ -81,23 +113,4 @@ export class RankService {
     }
   }
 
-  // create(createRankDto: CreateRankDto) {
-  //   return 'This action adds a new rank';
-  // }
-
-  // findAll() {
-  //   return `This action returns all rank`;
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} rank`;
-  // }
-
-  // update(id: number, updateRankDto: UpdateRankDto) {
-  //   return `This action updates a #${id} rank`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} rank`;
-  // }
 }
