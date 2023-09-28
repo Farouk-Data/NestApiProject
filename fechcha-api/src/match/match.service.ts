@@ -1,9 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from "src/prisma/prisma.service";
+import { RankService } from 'src/rank/rank.service';
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { CreateMatchDto } from './dto/create-match.dto';
 import { UpdateMatchDto } from './dto/update-match.dto';
 import { resolve } from 'path';
+import { Console } from 'console';
 
 
 async function sleep(ms: number): Promise<void> {
@@ -24,6 +26,7 @@ async function play() {
 export class MatchService {
   constructor(
     private prisma: PrismaService,
+    private rank: RankService,
   ) {}
 
   getRandomDistinctIndices(max: number): number[] {
@@ -37,7 +40,7 @@ export class MatchService {
     return indices;
   }
 
-  // async update
+  // async updateq
 
   async playMatch() {
     const players = await this.prisma.player.findMany();
@@ -72,6 +75,7 @@ export class MatchService {
     //check which player won
     if (player1.rankBoard == "Provisional" && player2.rankBoard == "Provisional"){
       if (player1Id > player2Id)
+        // await this.prisma.player.findUnique()
         s = 1;
       else 
         s = -1;
