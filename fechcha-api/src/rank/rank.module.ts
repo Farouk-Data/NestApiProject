@@ -6,6 +6,7 @@ import { AuthModule } from 'src/auth/auth.module';
 @Module({
   imports: [AuthModule],
   controllers: [RankController],
-  providers: [RankService]
+  providers: [RankService],
+  exports : [RankService],
 })
 export class RankModule {}
