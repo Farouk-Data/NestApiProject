@@ -38,6 +38,11 @@ export class RankService {
     });
     return (user);
   }
+
+  async getAllRank(){
+    return this.prisma.player.findMany();
+  }
+
   async getProvRank(){
     return this.prisma.player.findMany({
       where: {
@@ -48,9 +53,7 @@ export class RankService {
       }
     });
   }
-  async getAllRank(){
-    return this.prisma.player.findMany();
-  }
+
   async getEstaRank(){
     return this.prisma.player.findMany({
       where: {
@@ -60,6 +63,25 @@ export class RankService {
         rank: 'asc',
       }
     });
+  }
+
+  async updateRank(): Promise<void> {
+    const players = await this.prisma.player.findMany({
+      orderBy: {
+        eloRating: 'desc',
+
+      }
+    });
+
+    let newRank = 1;
+
+    for (const player of players){
+      await this.prisma.player.update({
+        where: { playerId : player.playerId},
+        data: {rank: newRank },
+      })
+      newRank++;
+    }
   }
 
   async updateDivision(): Promise<void> {
@@ -93,24 +115,4 @@ export class RankService {
       }
     }
   }
-
-  async updateRank(): Promise<void> {
-    const players = await this.prisma.player.findMany({
-      orderBy: {
-        eloRating: 'desc',
-
-      }
-    });
-
-    let newRank = 1;
-
-    for (const player of players){
-      await this.prisma.player.update({
-        where: { playerId : player.playerId},
-        data: {rank: newRank },
-      })
-      newRank++;
-    }
-  }
-
 }
