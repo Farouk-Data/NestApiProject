@@ -6,12 +6,13 @@ import { RankModule } from './rank/rank.module';
 import { HomeModule } from './home/home.module';
 import { MatchModule } from './match/match.module';
 import { MatchMakingModule } from './match-making/match-making.module';
+import { MatchesModule } from './matches/matches.module';
 
 //config for env
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
-  }), HomeModule, AuthModule, PrismaModule, RankModule, MatchModule, MatchMakingModule],
+  }), HomeModule, AuthModule, PrismaModule, RankModule, MatchModule, MatchMakingModule, MatchesModule],
   controllers: [],
   providers: [],
   exports: []
