@@ -1,34 +1,51 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody } from '@nestjs/websockets';
-import { MatchMakingService } from './match-making.service';
-import { CreateMatchMakingDto } from './dto/create-match-making.dto';
-import { UpdateMatchMakingDto } from './dto/update-match-making.dto';
+import {ConnectedSocket, 
+  OnGatewayDisconnect,
+  WebSocketGateway,
+  WebSocketServer,
+  SubscribeMessage,
+  MessageBody } from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
+import { UseGuards } from '@nestjs/common';
+import { queueArr } from './entities/queue.entity';
+import { MatchService } from 'src/match/match.service';
+import { getUser } from 'src/decorators/get-user.decorator';
 
 @WebSocketGateway()
-export class MatchMakingGateway {
-  constructor(private readonly matchMakingService: MatchMakingService) {}
+export class MatchMakingGateway implements OnGatewayDisconnect{
+  @WebSocketServer()
+  queue: queueArr = new queueArr();
+  server: Server;
 
-  @SubscribeMessage('createMatchMaking')
-  create(@MessageBody() createMatchMakingDto: CreateMatchMakingDto) {
-    return this.matchMakingService.create(createMatchMakingDto);
+  constructor(private MatchService: MatchService){}
+
+  handleDisconnect(client: any) {
+    this.queue.deletePlayer(client);
   }
 
-  @SubscribeMessage('findAllMatchMaking')
-  findAll() {
-    return this.matchMakingService.findAll();
-  }
+  //use the right Auth for the guard to authenticate the client
+  // @UseGuards(Auth)  => to do
+  @SubscribeMessage('joinMatch')
+  async joinMatch(
+    @getUser() user, //current user
+    @ConnectedSocket() client: Socket,
+  ){
+    //possible problem if user and adversary are the same
+    const adversary = this.queue.players[0];
+    if (adversary) //if you found an already user waiting in the queue
+    {
+      this.queue.deletePlayerById(adversary.id);
 
-  @SubscribeMessage('findOneMatchMaking')
-  findOne(@MessageBody() id: number) {
-    return this.matchMakingService.findOne(id);
-  }
+      //create a match between user and adversary => to do
+      const match = await this.MatchService.playMatch();
 
-  @SubscribeMessage('updateMatchMaking')
-  update(@MessageBody() updateMatchMakingDto: UpdateMatchMakingDto) {
-    return this.matchMakingService.update(updateMatchMakingDto.id, updateMatchMakingDto);
-  }
+      //emit event to client
+      this.server.to(client.id).emit('matchingFound', {id: match.id});
 
-  @SubscribeMessage('removeMatchMaking')
-  remove(@MessageBody() id: number) {
-    return this.matchMakingService.remove(id);
+      //emit event to adversary
+      this.server.to(adversary.socketId).emit('matchingFound', {id: match.id});
+    }
+    else{
+      this.queue.addPlayer(user.id, client);
+    }
   }
 }
