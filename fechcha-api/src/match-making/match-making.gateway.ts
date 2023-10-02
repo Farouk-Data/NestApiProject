@@ -7,8 +7,9 @@ import {ConnectedSocket,
 import { Server, Socket } from 'socket.io';
 import { UseGuards } from '@nestjs/common';
 import { queueArr } from './entities/queue.entity';
-import { MatchService } from 'src/match/match.service';
 import { getUser } from 'src/decorators/get-user.decorator';
+import { MatchesService } from 'src/matches/matches.service';
+import { matchType } from '@prisma/client';
 
 @WebSocketGateway()
 export class MatchMakingGateway implements OnGatewayDisconnect{
@@ -16,7 +17,7 @@ export class MatchMakingGateway implements OnGatewayDisconnect{
   queue: queueArr = new queueArr();
   server: Server;
 
-  constructor(private MatchService: MatchService){}
+  constructor(private matchesService: MatchesService){}
 
   handleDisconnect(client: any) {
     this.queue.deletePlayer(client);
@@ -24,7 +25,7 @@ export class MatchMakingGateway implements OnGatewayDisconnect{
 
   //use the right Auth for the guard to authenticate the client
   // @UseGuards(Auth)  => to do
-  @SubscribeMessage('joinMatch')
+  @SubscribeMessage('makeMatch')
   async joinMatch(
     @getUser() user, //current user
     @ConnectedSocket() client: Socket,
@@ -36,13 +37,17 @@ export class MatchMakingGateway implements OnGatewayDisconnect{
       this.queue.deletePlayerById(adversary.id);
 
       //create a match between user and adversary => to do
-      const match = await this.MatchService.playMatch();
+      const match = await this.matchesService.create(
+        user.id,
+        adversary.id,
+        matchType.MatchMaking,
+      );
 
       //emit event to client
-      this.server.to(client.id).emit('matchingFound', {id: match.id});
+      this.server.to(client.id).emit('matchingFound', {id: match.matchId});
 
       //emit event to adversary
-      this.server.to(adversary.socketId).emit('matchingFound', {id: match.id});
+      this.server.to(adversary.socketId).emit('matchingFound', {id: match.matchId});
     }
     else{
       this.queue.addPlayer(user.id, client);
