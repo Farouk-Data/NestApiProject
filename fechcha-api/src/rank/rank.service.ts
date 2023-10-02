@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRankDto } from './dto/create-rank.dto';
-import { UpdateRankDto } from './dto/update-rank.dto';
 import { PrismaService } from "src/prisma/prisma.service";
 import { Player } from '@prisma/client'
 
