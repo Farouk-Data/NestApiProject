@@ -21,4 +21,19 @@ export class MatchesService {
     
     return (match);
   }
+
+  async findOneById(matchId: number) {
+    try {
+      const match = await this.prisma.match.findUnique({
+        where: {
+          matchId: matchId,
+        },
+      });
+      
+      return match;
+    } catch (error) {
+      console.error('Error finding match by ID:', error);
+      throw error;
+    }
+  }
 }
