@@ -26,7 +26,7 @@ export class MatchMakingGateway implements OnGatewayDisconnect{
   //use the right Auth for the guard to authenticate the client
   // @UseGuards(Auth)  => to do
   @SubscribeMessage('makeMatch')
-  async joinMatch(
+  async makeMatch(
     @getUser() user, //current user
     @ConnectedSocket() client: Socket,
   ){
