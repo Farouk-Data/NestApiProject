@@ -1,34 +1,42 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody } from '@nestjs/websockets';
+import { WebSocketGateway, SubscribeMessage, MessageBody, OnGatewayDisconnect, OnGatewayInit, WebSocketServer, ConnectedSocket, WsException } from '@nestjs/websockets';
 import { MatchesService } from './matches.service';
-import { CreateMatchDto } from './dto/create-match.dto';
-import { UpdateMatchDto } from './dto/update-match.dto';
+import { Server } from 'socket.io';
+import { GamesCollection } from './entities/game.entity';
+import { getUser } from 'src/decorators/get-user.decorator';
+import { UseGuards } from '@nestjs/common';
+import { Socket } from 'socket.io';
 
 @WebSocketGateway()
-export class MatchesGateway {
-  constructor(private readonly matchesService: MatchesService) {}
+export class MatchesGateway implements  OnGatewayDisconnect, OnGatewayInit{
+    @WebSocketServer()
+    server: Server;
+    games: GamesCollection;
 
-  @SubscribeMessage('createMatch')
-  create(@MessageBody() createMatchDto: CreateMatchDto) {
-    return this.matchesService.create(createMatchDto);
-  }
+constructor(private matchesService: MatchesService){}
 
-  @SubscribeMessage('findAllMatches')
-  findAll() {
-    return this.matchesService.findAll();
-  }
-
-  @SubscribeMessage('findOneMatch')
-  findOne(@MessageBody() id: number) {
-    return this.matchesService.findOne(id);
-  }
-
-  @SubscribeMessage('updateMatch')
-  update(@MessageBody() updateMatchDto: UpdateMatchDto) {
-    return this.matchesService.update(updateMatchDto.id, updateMatchDto);
-  }
-
-  @SubscribeMessage('removeMatch')
-  remove(@MessageBody() id: number) {
-    return this.matchesService.remove(id);
-  }
+afterInit(): any {
+    this.games = new GamesCollection(this.server, this.matchesService);
 }
+
+handleDisconnect(client: any) {
+    this.games.removePlayer(client);
+}
+
+// @UseGuards()
+@SubscribeMessage('joinMatch')
+async joinMatch(
+    @getUser() user,
+    @ConnectedSocket() client: Socket,
+    @MessageBody('matchId') matchId: number,
+){
+    const match = await this.matchesService.findOneById(matchId);
+    if (!match)
+        throw new WsException("Match Not Found!");
+    if (match.winnerId !== null)
+        throw new WsException("Match is Over!");
+
+    this.games.connectPlayer(match, user.id, client);
+    }
+}
+
+//can add event handler to update the move of the game
