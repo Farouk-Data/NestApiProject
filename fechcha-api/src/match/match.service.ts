@@ -1,12 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from "src/prisma/prisma.service";
 import { RankService } from 'src/rank/rank.service';
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { CreateMatchDto } from './dto/create-match.dto';
-import { UpdateMatchDto } from './dto/update-match.dto';
-import { resolve } from 'path';
-import { Console } from 'console';
-
 
 async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => {
