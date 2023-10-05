@@ -37,7 +37,6 @@ model Player {
 
 model Match {
   matchId Int @id @default(autoincrement())
-  state   Int
 
   home   Player @relation("home", fields: [homeId], references: [playerId])
   homeId Int
@@ -47,8 +46,6 @@ model Match {
 
   winner   Player? @relation("winner", fields: [winnerId], references: [playerId])
   winnerId Int?
-
-  type matchType @default(NotSet)
 
   @@map("matches")
 }
@@ -63,10 +60,4 @@ enum Division {
 enum RankBoard {
   Provisional
   Established
-}
-
-enum matchType {
-  NotSet
-  MatchMaking
-  Invite
 }
