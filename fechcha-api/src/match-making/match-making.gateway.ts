@@ -9,7 +9,6 @@ import { UseGuards } from '@nestjs/common';
 import { queueArr } from './entities/queue.entity';
 import { getUser } from 'src/decorators/get-user.decorator';
 import { MatchesService } from 'src/matches/matches.service';
-import { matchType } from '@prisma/client';
 
 @WebSocketGateway()
 export class MatchMakingGateway implements OnGatewayDisconnect{
@@ -40,7 +39,6 @@ export class MatchMakingGateway implements OnGatewayDisconnect{
       const match = await this.matchesService.create(
         user.id,
         adversary.id,
-        matchType.MatchMaking,
       );
 
       //emit event to client
