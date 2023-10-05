@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Player, matchType } from '@prisma/client';
+import { Player } from '@prisma/client';
 
 @Injectable()
 export class MatchesService {
@@ -9,13 +9,11 @@ export class MatchesService {
     private prisma: PrismaService
   ){}
 
-  async create(userId: number, adverId: number, typeM: matchType){
+  async create(userId: number, adverId: number){
     const match = await this.prisma.match.create({
       data: {
         homeId: userId,
         adversaryId: adverId,
-        type: typeM,
-        state: 0,
       }
     });
     
