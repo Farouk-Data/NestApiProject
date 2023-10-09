@@ -16,13 +16,39 @@ export class RankService {
       return this.prisma.player.findMany();
     }
 
-    async getOneRank(id: number){
-      const user = await this.prisma.player.findUnique({
-        where: {
-          playerId: id
+    async getOneRank(id: number) {
+      const player = await this.prisma.player.findUnique({
+        where: { playerId: id },
+      });
+      return (player?.rank);
+    }
+  
+    async getNumOfMatchesPlayed(id: number): Promise<any>{
+      const player = await this.prisma.player.findUnique({
+        where: {playerId : id },
+      });
+      return (player?.numOfGames);
+    }
+  
+    async getEloScore(id: number): Promise<any>{
+      const player = await this.prisma.player.findUnique({
+        where: { playerId : id },
+      });
+      return (player?.eloRating);
+    }
+  
+    async getNumOfWins(id: number): Promise<any>{
+      const player = await this.prisma.player.findUnique({
+        where: {playerId : id},
+        include:{
+          matches3: {
+            where: {
+              winnerId: id,
+            }
+          }
         }
       });
-      return (user);
+      return (player?.matches3.length);
     }
 
     async getProvRank(){
