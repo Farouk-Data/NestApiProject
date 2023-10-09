@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Player } from '@prisma/client';
 
 @Injectable()
 export class MatchesService {
   
   constructor(
-    private prisma: PrismaService
+    private prisma: PrismaService,
+    // private rank: RankService,
   ){}
 
   async create(userId: number, adverId: number){

@@ -23,8 +23,8 @@ export class AuthService {
             //save the user in the db
             const user = await this.prisma.player.create({
                 data: {
-                    eloRating: 1500,
-                    numOfGames: 0,
+                    eloRating: dto.eloRating,
+                    numOfGames: dto.numOfGames,
                     rank: 1,
                     email: dto.email,
                     passwordHash: hash,

@@ -9,4 +9,9 @@ export class AuthDto {
     @IsString()
     @IsNotEmpty()
     passwordHash: string
+
+    eloRating: number
+    numOfGames: number
+    // rank: number
+    
 }

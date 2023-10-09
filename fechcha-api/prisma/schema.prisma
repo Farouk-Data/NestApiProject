@@ -12,11 +12,11 @@ datasource db {
 
 model Player {
   playerId   Int       @id @default(autoincrement())
-  eloRating  Int
-  numOfGames Int
+  eloRating  Int?
+  numOfGames Int?
   rank       Int
-  division   Division  @default(Nooby)
-  rankBoard  RankBoard @default(Provisional)
+  division   Division @default(Nooby)
+  rankBoard  RankBoard @default(Provisional) 
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

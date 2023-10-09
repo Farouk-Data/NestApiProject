@@ -1,7 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from "src/prisma/prisma.service";
-// import { Player } from '@prisma/client'
 import { MatchesService } from 'src/matches/matches.service';
+
+async function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, ms);
+  })
+}
+
+async function play() {
+  console.log("Game Started!!");
+  await sleep(5000);
+  console.log("Game Finished");
+}
+
+
 
 @Injectable()
 export class RankService {
@@ -12,16 +27,56 @@ export class RankService {
     private matches: MatchesService,
     ) {}
 
+    getRandomDistinctIndices(max: number): number[] {
+      const indices = [];
+      while (indices.length < 2) {
+        const index = Math.floor(Math.random() * max);
+        if (!indices.includes(index)) {
+          indices.push(index);
+        }
+      }
+      return indices;
+    }
+
+    async playMatch() {
+      const players = await this.prisma.player.findMany();
+      if (players.length < 2) {
+        return 'Not enough players to play a match';
+      }
+      else  
+        console.log("There's enough players");
+  
+      // Randomly select two distinct player indices
+      const [player1Index, player2Index] = this.getRandomDistinctIndices(players.length);
+  
+      // Get the selected players' IDs
+      const player1Id = players[player1Index].playerId;
+      const player2Id = players[player2Index].playerId;
+  
+      const match = this.matches.create(player1Id, player2Id);
+      // play();
+      await this.prisma.match.update({
+        where:{
+          matchId: (await match).matchId
+        },
+        data:{
+          winnerId: player2Id
+        },
+      })
+      this.updateElo((await match).matchId);
+      return this.getAllRank();
+    }
+
     async getAllRank(){
       return this.prisma.player.findMany();
     }
 
-    async getOneRank(id: number) {
-      const player = await this.prisma.player.findUnique({
-        where: { playerId: id },
-      });
-      return (player?.rank);
-    }
+    // async getOneRank(id: number) {
+    //   const player = await this.prisma.player.findUnique({
+    //     where: { playerId: id },
+    //   });
+    //   return (player?.rank);
+    // }
   
     async getNumOfMatchesPlayed(id: number): Promise<any>{
       const player = await this.prisma.player.findUnique({
@@ -51,24 +106,24 @@ export class RankService {
       return (player?.matches3.length);
     }
 
-    async getProvRank(){
+    async getProvElo(){
       return this.prisma.player.findMany({
         where: {
           rankBoard: 'Provisional',
         },
         orderBy: {
-          rank: 'asc',
+          eloRating: 'desc',
         }
       });
     }
   
-    async getEstaRank(){
+    async getEstaElo(){
       return this.prisma.player.findMany({
         where: {
           rankBoard: 'Established',
         },
         orderBy: {
-          rank: 'asc',
+          eloRating: 'desc',
         }
       });
     }
@@ -98,20 +153,35 @@ export class RankService {
   }
   
   async updateRank(): Promise<void> {
-    const players = await this.prisma.player.findMany({
-      orderBy: {
-        eloRating: 'desc',
-      }
-    });
+    const estaPlayers = await this.getEstaElo();
+    const provPlayers = await this.getProvElo();
 
     let newRank = 1;
 
-    for (const player of players){
-      await this.prisma.player.update({
-        where: { playerId : player.playerId},
-        data: {rank: newRank },
-      })
-      newRank++;
+    console.log(estaPlayers.length);
+    console.log("HERE!!!!!!!!!!");
+    if (estaPlayers.length !== 0){
+      for (const player of estaPlayers){
+        await this.prisma.player.update({
+          where: { playerId : player.playerId,
+            rankBoard: "Established"},
+            data: {rank: newRank },
+          })
+          newRank++;
+        }
+      }
+    console.log("HERE!!!!!!!!!!");
+    console.log(provPlayers.length);
+    if (provPlayers.length !== 0){
+      for (const player of provPlayers){
+        await this.prisma.player.update({
+          where: { playerId : player.playerId,
+            rankBoard: "Provisional"},
+            data: {rank: newRank },
+          })
+          newRank++;
+          console.log(player.eloRating, " => ", player.rank);
+      }
     }
   }
 
@@ -169,14 +239,22 @@ export class RankService {
 
   async updateElo(matchId: number){
     const match = await this.matches.findOneById(matchId);
-    const players = await this.prisma.player.findMany();
-    const home = players[match.homeId];
-    const adversary = players[match.adversaryId];
+    const home = await this.prisma.player.findUnique({
+      where: {
+        playerId: match.homeId,
+      }
+    })
+
+    const adversary = await this.prisma.player.findUnique({
+      where:{
+        playerId: match.adversaryId,
+      }
+    })
    
     let s1 = 0, s2 = 0, newR1 = 0, newR2 = 0;
 
-    this.incrementNumOfGames(home.playerId);
-    this.incrementNumOfGames(adversary.playerId);
+    this.incrementNumOfGames(match.homeId);
+    this.incrementNumOfGames(match.adversaryId);
     
     if (home.rankBoard == "Provisional" && adversary.rankBoard == "Provisional"){
       if (home.playerId == match.winnerId){
